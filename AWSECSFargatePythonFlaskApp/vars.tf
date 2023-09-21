@@ -42,7 +42,7 @@ variable "ecs_force_new_deployment" {
 }
 
 variable "ecs_task_assign_public_ip" {
-  default = false
+  default = true
 }
 
 variable "alb_inbound_allowed_public_ip" {
