@@ -10,10 +10,10 @@ module "ecs_monitoring_app" {
 #--------- Outputs -------------#
 output "alb_dns_name" {
   description = "The DNS name of the load balancer"
-  value       = "http://${aws_lb.monitoring-app.dns_name}/"
+  value       = "http://${module.ecs_monitoring_app.alb_dns_name}/"
 }
 
 output "monitoring_status" {
   description = "The URL Monitoring Status Path"
-  value       = "http://${aws_lb.monitoring-app.dns_name}/status"
+  value       = "http://${module.ecs_monitoring_app.monitoring_status}/status"
 }

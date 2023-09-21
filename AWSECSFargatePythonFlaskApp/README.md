@@ -1,5 +1,6 @@
 
 ```hcl
+# Module declaration from projects
 module "ecs_monitoring_app" {
   source                        = "git::https://github.com/nagajyothi0207/terraform_modules_registry//AWSECSFargatePythonFlaskApp?ref=aws_ecs_python_app-v0.0.2"
   application_name              = var.application_name
@@ -8,6 +9,16 @@ module "ecs_monitoring_app" {
   alb_inbound_allowed_public_ip = var.alb_inbound_allowed_public_ip
 }
 
+#--------- Outputs -------------#
+output "alb_dns_name" {
+  description = "The DNS name of the load balancer"
+  value       = "http://${module.ecs_monitoring_app.alb_dns_name}/"
+}
+
+output "monitoring_status" {
+  description = "The URL Monitoring Status Path"
+  value       = "http://${module.ecs_monitoring_app.monitoring_status}/status"
+}
 ```
 
 For more examples, please refer to the examples directory.
@@ -19,17 +30,6 @@ For more examples, please refer to the examples directory.
 4. Your Public IP for accessing the ALB and the url monitoring status
 
 ## Outputs
-```hcl 
-output "alb_dns_name" {
-  description = "The DNS name of the load balancer"
-  value       = "http://${aws_lb.monitoring-app.dns_name}/"
-}
-
-output "monitoring_status" {
-  description = "The URL Monitoring Status Path"
-  value       = "http://${aws_lb.monitoring-app.dns_name}/status"
-}
-```
 
 ## Dependencies
 List any dependencies your module requires, such as specific Terraform providers.
