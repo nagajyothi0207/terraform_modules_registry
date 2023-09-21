@@ -80,7 +80,7 @@ resource "aws_security_group" "monitoring-app" {
     from_port        = 0
     to_port          = 0
     protocol         = "TCP"
-    cidr_blocks      = ["${local.vpc_cdir}"]
+    cidr_blocks      = ["${local.vpc_cidr}"]
     ipv6_cidr_blocks = [""]
   }
   egress {
