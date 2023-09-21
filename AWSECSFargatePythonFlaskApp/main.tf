@@ -81,14 +81,14 @@ resource "aws_security_group" "monitoring-app" {
     to_port          = 0
     protocol         = "TCP"
     cidr_blocks      = ["${local.vpc_cidr}"]
-    ipv6_cidr_blocks = [""]
+#    ipv6_cidr_blocks = [""]
   }
   egress {
     from_port        = 0
     to_port          = 0
     protocol         = "TCP"
     cidr_blocks      = ["${local.vpc_cidr}"]
-    ipv6_cidr_blocks = [""]
+#    ipv6_cidr_blocks = [""]
   }
 }
 
@@ -105,7 +105,15 @@ resource "aws_security_group" "monitoring-app-sg" {
     to_port          = 0
     protocol         = "-1"
     cidr_blocks      = ["${local.vpc_cidr}"]
-    ipv6_cidr_blocks = [""]
+#    ipv6_cidr_blocks = [""]
+  }
+
+    egress {
+    description      = "Allow HTTP from VPC CIDR"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["${local.vpc_cidr}"]
   }
 
   dynamic "ingress" {

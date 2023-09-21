@@ -54,5 +54,5 @@ variable "alb_sg_inbound_ports" {
 }
 
 variable "alb_sg_outbound_ports" {
-  default = [443, 80]
+  default = [443, 80, 5000]
 }
