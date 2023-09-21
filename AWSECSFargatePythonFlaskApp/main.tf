@@ -95,7 +95,7 @@ resource "aws_security_group" "monitoring-app" {
 
 
 # Loadbalancer resources
-resource "aws_security_group" "monitoring-app" {
+resource "aws_security_group" "monitoring-app-sg" {
   name        = "${var.application_name}-alb-security_group"
   description = "Allow inbound traffic to flask app"
   vpc_id      = var.vpc_id
@@ -129,7 +129,7 @@ resource "aws_security_group" "monitoring-app" {
 
 }
 
-resource "aws_lb_target_group" "monitoring-app" {
+resource "aws_lb_target_group" "monitoring-app-alb-sg" {
   name        = var.application_name
   port        = var.ecs_container_port
   protocol    = "HTTP"
