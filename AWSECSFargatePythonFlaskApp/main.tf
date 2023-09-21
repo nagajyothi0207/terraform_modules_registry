@@ -65,7 +65,7 @@ resource "aws_ecs_service" "monitoring-app" {
     assign_public_ip = var.ecs_task_assign_public_ip
   }
   load_balancer {
-    target_group_arn = aws_lb_target_group.monitoring-app.arn
+    target_group_arn = aws_lb_target_group.monitoring-app-alb-tg.arn
     container_name   = var.application_name
     container_port   = var.ecs_container_port
   }
@@ -129,7 +129,7 @@ resource "aws_security_group" "monitoring-app-sg" {
 
 }
 
-resource "aws_lb_target_group" "monitoring-app-alb-sg" {
+resource "aws_lb_target_group" "monitoring-app-alb-tg" {
   name        = var.application_name
   port        = var.ecs_container_port
   protocol    = "HTTP"
@@ -147,7 +147,7 @@ resource "aws_lb" "monitoring-app" {
   name                       = "${var.application_name}-alb"
   internal                   = false
   load_balancer_type         = "application"
-  security_groups            = [aws_security_group.monitoring-app.id]
+  security_groups            = [aws_security_group.monitoring-app-sg.id]
   subnets                    = var.subnets
   enable_deletion_protection = false
   tags = {
@@ -160,7 +160,7 @@ resource "aws_lb_listener" "monitoring-app" {
   protocol          = "HTTP"
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.monitoring-app.arn
+    target_group_arn = aws_lb_target_group.monitoring-app-alb-tg.arn
   }
 }
 resource "aws_lb_listener_rule" "monitoring-app" {
@@ -168,7 +168,7 @@ resource "aws_lb_listener_rule" "monitoring-app" {
   priority     = 1
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.monitoring-app.arn
+    target_group_arn = aws_lb_target_group.monitoring-app-alb-tg.arn
   }
   condition {
     path_pattern {
