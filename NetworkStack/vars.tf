@@ -7,7 +7,7 @@ variable "vpc_cidr_block" {
 }
 
 variable "public_subnet_numbers" {
-  type = map(number)
+  type        = map(number)
   description = "Map of AZ to a number that should be used for public subnets"
   default = {
     "ap-southeast-1a" = 1
@@ -15,9 +15,9 @@ variable "public_subnet_numbers" {
     "ap-southeast-1c" = 3
   }
 }
- 
+
 variable "private_subnet_numbers" {
-  type = map(number)
+  type        = map(number)
   description = "Map of AZ to a number that should be used for private subnets"
   default = {
     "ap-southeast-1a" = 4
@@ -32,8 +32,8 @@ variable "my_public_ip_address" {
 
 variable "create_ssm_endpoints" {
   description = "If set to true, it will create vm"
-  type   = bool
-  default = true
+  type        = bool
+  default     = true
 
 }
 

@@ -1,7 +1,7 @@
 resource "aws_subnet" "private_subnet" {
-  for_each = var.private_subnet_numbers
+  for_each                = var.private_subnet_numbers
   vpc_id                  = data.aws_vpc.default.id
-  cidr_block              = cidrsubnet(var.vpc_cidr_block, 8, each.value)    #"172.31.${90+count.index}.0/27"
+  cidr_block              = cidrsubnet(var.vpc_cidr_block, 8, each.value) #"172.31.${90+count.index}.0/27"
   availability_zone       = each.key
   map_public_ip_on_launch = false
   tags = {
@@ -11,7 +11,7 @@ resource "aws_subnet" "private_subnet" {
 
 
 resource "aws_network_acl" "private_subnet_nacl" {
-  vpc_id = data.aws_vpc.default.id
+  vpc_id     = data.aws_vpc.default.id
   subnet_ids = values(aws_subnet.private_subnet).*.id
 
   ingress {
@@ -23,7 +23,7 @@ resource "aws_network_acl" "private_subnet_nacl" {
     to_port    = 80
   }
 
-    ingress {
+  ingress {
     protocol   = "tcp"
     rule_no    = 200
     action     = "allow"
@@ -31,7 +31,7 @@ resource "aws_network_acl" "private_subnet_nacl" {
     from_port  = 80
     to_port    = 80
   }
-    ingress {
+  ingress {
     protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
@@ -114,8 +114,8 @@ resource "aws_network_acl" "private_subnet_nacl" {
 resource "aws_route_table" "private_rt" {
   vpc_id = data.aws_vpc.default.id
   route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id  = aws_nat_gateway.natgw.id
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.natgw.id
   }
   tags = {
     Name = "Private_RT"
@@ -143,7 +143,7 @@ resource "aws_security_group" "private_security_group" {
   description = "to allow traffic from private ips"
   vpc_id      = data.aws_vpc.default.id
 
-#Bastion host to connect to the EC2 instances running on Private Subnets
+  #Bastion host to connect to the EC2 instances running on Private Subnets
   ingress {
     description = "TLS from VPC"
     from_port   = 22
@@ -152,7 +152,7 @@ resource "aws_security_group" "private_security_group" {
     cidr_blocks = [values(aws_subnet.public_subnet)[0].cidr_block]
   }
 
-# ALB Traffic from public Subnets
+  # ALB Traffic from public Subnets
   ingress {
     from_port   = 80
     to_port     = 80
@@ -169,7 +169,7 @@ resource "aws_security_group" "private_security_group" {
   }
 
   # Internet Access for Package download and installation of softwares like nginx/apache
-    egress {
+  egress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"

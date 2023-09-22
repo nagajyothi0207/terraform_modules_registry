@@ -1,5 +1,5 @@
 resource "aws_subnet" "public_subnet" {
-  for_each = var.public_subnet_numbers
+  for_each                = var.public_subnet_numbers
   vpc_id                  = data.aws_vpc.default.id
   cidr_block              = cidrsubnet(var.vpc_cidr_block, 8, each.value)
   availability_zone       = each.key
@@ -11,10 +11,10 @@ resource "aws_subnet" "public_subnet" {
 
 
 resource "aws_network_acl" "public_subnet_nacl" {
-  vpc_id = data.aws_vpc.default.id
-  subnet_ids =  values(aws_subnet.public_subnet).*.id
-# For NATGW Access from VPC Cidr
-ingress {
+  vpc_id     = data.aws_vpc.default.id
+  subnet_ids = values(aws_subnet.public_subnet).*.id
+  # For NATGW Access from VPC Cidr
+  ingress {
     protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
@@ -23,7 +23,7 @@ ingress {
     to_port    = 65535
   }
 
-# Communication to ALB on Nginx Port
+  # Communication to ALB on Nginx Port
   egress {
     protocol   = "tcp"
     rule_no    = 100
@@ -32,7 +32,7 @@ ingress {
     from_port  = 80
     to_port    = 80
   }
-egress {
+  egress {
     protocol   = "tcp"
     rule_no    = 200
     action     = "allow"
@@ -40,7 +40,7 @@ egress {
     from_port  = 80
     to_port    = 80
   }
-egress {
+  egress {
     protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
@@ -49,9 +49,9 @@ egress {
     to_port    = 80
   }
 
-# Optional for SSH Traffic to private Servers (Optioal - Only if Bastion Server deployment needed)
+  # Optional for SSH Traffic to private Servers (Optioal - Only if Bastion Server deployment needed)
 
-ingress {
+  ingress {
     protocol   = "tcp"
     rule_no    = 200
     action     = "allow"
@@ -60,8 +60,8 @@ ingress {
     to_port    = 22
   }
 
-# Internet Access to the ALB for Ngnix page
-ingress {
+  # Internet Access to the ALB for Ngnix page
+  ingress {
     protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
@@ -80,7 +80,7 @@ ingress {
 
 
   # Internet out for NATGW (Optional - Only required if NATGW deployment is needed)
-    egress {
+  egress {
     protocol   = "tcp"
     rule_no    = 1400
     action     = "allow"
@@ -88,7 +88,7 @@ ingress {
     from_port  = 443
     to_port    = 443
   }
-    ingress {
+  ingress {
     protocol   = "tcp"
     rule_no    = 1400
     action     = "allow"
@@ -136,7 +136,7 @@ resource "aws_security_group" "Public_SG" {
   description = "Allow http inbound traffic"
   vpc_id      = data.aws_vpc.default.id
 
-# If Bastion Server deployment is `true`, this rule allows only from a trusted source to connect EC2 using SSH
+  # If Bastion Server deployment is `true`, this rule allows only from a trusted source to connect EC2 using SSH
   ingress {
     description = "TLS from VPC"
     from_port   = 22
@@ -144,7 +144,7 @@ resource "aws_security_group" "Public_SG" {
     protocol    = "tcp"
     cidr_blocks = [var.my_public_ip_address]
   }
-# Internet Users to connect Public Load Balancer 
+  # Internet Users to connect Public Load Balancer 
   ingress {
     from_port   = 80
     to_port     = 80
@@ -152,16 +152,16 @@ resource "aws_security_group" "Public_SG" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-# to send the Nginx/Apache traffic to Private Servers/EC2
-    egress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+  # to send the Nginx/Apache traffic to Private Servers/EC2
+  egress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
     security_groups = [aws_security_group.private_security_group.id]
   }
 
-# for any Internet Traffic from Bastion Host
-    egress {
+  # for any Internet Traffic from Bastion Host
+  egress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
